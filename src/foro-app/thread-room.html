@@ -1,0 +1,79 @@
+<link rel="import" href="/bower_components/polymer/polymer-element.html">
+<link rel="import" href="/bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="/bower_components/paper-card/paper-card.html">
+<link rel="import" href="/bower_components/paper-input/paper-input.html">
+<link rel="import" href="/bower_components/paper-button/paper-button.html">
+
+<dom-module id="thread-room">
+  <template>
+    <style>
+      h1 {
+        text-align: center;
+      }
+      paper-card {
+        margin: 5px 10px;
+        padding: 15px;
+        width: 90%;
+      }
+      paper-input {
+        margin: 5px 50px 0px 20px;
+      }
+      paper-button {
+        background-color: #1E88E5;
+        color: white;
+        margin: 0 20px;
+      }
+    </style>
+
+    <h1>Bienvenido a Polymer México</h1>
+    <template is="dom-repeat" items="[[comments]]" as="comment">
+      <paper-card>
+        <p>[[comment.comment]]</p>
+      </paper-card>
+    </template>
+    <paper-input id="comment" label="Escribe tu comentrio"></paper-input>
+    <paper-button raised on-tap="newComment">Comentar</paper-button>
+  </template>
+  <script>
+    (function threadRoom(customElements) {
+      'use strict';
+
+      class ThreadRoom extends Polymer.Element {
+        static get is() {
+          return 'thread-room';
+        }
+        static get properties() {
+          return {
+            comments: {
+              type: Array,
+              value: [
+                {comment:"Aquí podrás encontrar la respuesta a tus dudas."},
+                {comment:"Animate a preguntar lo que quieras."},
+              ],
+            },
+            // TODO ¿Double dom-for to plaint this arrays? 
+            // threads: {
+            //   type: Array,
+            //   value: [
+            //     {
+            //       title: 'Bienvenido a Polymer México',
+            //       comments: ['Aquí podrás encontrar la respuesta a tus dudas.', 'Animate a preguntar lo que quieras.']
+            //     },{
+            //       title: 'Hablemos de Polymer 2.0',
+            //       comments: ['Polymer 2.0 ya está aquí con muchas cosas nuevas!']
+            //     }
+            //   ]
+            // }
+          };
+        }
+        newComment() {
+          let inputComment = this.shadowRoot.querySelector('#comment');
+          let commentsLength = this.comments.length + 1;
+          this.push('comments', {comment: inputComment.value});
+          inputComment.value = "";
+        }
+      }
+      customElements.define(ThreadRoom.is, ThreadRoom);
+    })(window.customElements)
+  </script>
+</dom-module>

@@ -1,0 +1,7 @@
+{
+  "name": "foro-polymer",
+  "short_name": "foro-polymer",
+  "description": "A forum to ask and talk about polymer in Mexico",
+  "start_url": "/",
+  "display": "standalone"
+}

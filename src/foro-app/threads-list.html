@@ -1,0 +1,85 @@
+<link rel="import" href="/bower_components/polymer/polymer-element.html">
+<link rel="import" href="/bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="/bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import" href="/bower_components/paper-card/paper-card.html">
+<link rel="import" href="/bower_components/paper-button/paper-button.html">
+<link rel="import" href="/bower_components/paper-input/paper-input.html">
+<link rel="import" href="/bower_components/paper-ripple/paper-ripple.html">
+
+<dom-module id="threads-list">
+  <template>
+    <style>
+      paper-card {
+        color: #1E88E5;
+        cursor: pointer;
+        margin: 0 3px;
+        width: 97%;
+      }
+      paper-button {
+        background-color: #F52757;
+        display: block;
+        color: white;
+        margin: 20px;
+        text-align: center;
+      }
+      paper-input {
+        margin: 0 20px;
+      }
+    </style>
+
+    <template is="dom-if" if="[[!threadCreator]]">
+      <paper-button raised on-click="threadMaker">Nuevo tema</paper-button>
+    </template>
+
+    <template is="dom-if" if="[[threadCreator]]">
+      <paper-input id="title" label="Titulo del nuevo tema"></paper-input>
+      <paper-button raised on-tap="newThread">Crear nuevo tema</paper-button>
+    </template>
+
+    <template is="dom-repeat" items="[[list]]" as="list">
+      <paper-card heading="[[list.title]]">
+        <paper-ripple></paper-ripple>
+      </paper-card>
+    </template>
+  </template>
+
+  <script>
+    (function threadList(customElements) {
+      'use strict';
+      class ThreadsList extends Polymer.Element {
+        static get is() {
+          return 'threads-list';
+        }
+
+        static get properties() {
+          return {
+            list: {
+              type: Array,
+              value: [
+                {title:"Bienvenido a Polymer México", thread:0},
+                {title:"Hablemos de Polymer 2.0", thread:1},
+              ],
+            },
+            threadCreator: {
+              type: Boolean,
+              value: false,
+            }
+          };
+        }
+
+        threadMaker() {
+          this.set('threadCreator', true);
+        }
+
+        newThread() {
+          let inputTitle = this.shadowRoot.querySelector('#title');
+          let listLength = this.list.length + 1;
+          this.push('list', {title: inputTitle.value, thread: listLength});
+          inputTitle.value = "";
+        }
+      }
+
+      customElements.define(ThreadsList.is, ThreadsList);
+    })(window.customElements);
+  </script>
+</dom-module>
