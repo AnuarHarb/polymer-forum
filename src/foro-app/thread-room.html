@@ -62,7 +62,7 @@
               type: Array,
               value: [
                 {
-                  title: 'Bienvenido a Polymer México',
+                  title: `Bienvenido a Polymer México`,
                   comments: ['Aquí podrás encontrar la respuesta a tus dudas.', 'Animate a preguntar lo que quieras.']
                 },{
                   title: 'Hablemos de Polymer 2.0',
@@ -88,7 +88,7 @@
           }
         }
 
-        // Compares the active thread with dom-for index to show active question
+        // Compares the active thread with dom-for index to show active thread
         _isEqualTo(active, index) {
           return active == index
         }
@@ -96,10 +96,8 @@
         //TODO Can´t reach the comments property of threads to push the new comment
         newComment(event) {
           let inputComment = this.shadowRoot.querySelector('#thread-' + this.activeThread);
-          // this.push('threads', inputComment.value);
-          console.log('new comment:', inputComment.value)
-          console.log(this.threads[this.activeThread].comments)
-          // inputComment.value = "";
+          this.push('threads.' + this.activeThread + '.comments', inputComment.value);
+          inputComment.value = "";
         }
       }
       customElements.define(ThreadRoom.is, ThreadRoom);
