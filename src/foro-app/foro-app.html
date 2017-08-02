@@ -26,7 +26,7 @@
     <app-drawer-layout>
       <app-drawer slot="drawer">
         <app-toolbar>Temas de Discusión</app-toolbar>
-        <threads-list></threads-list>
+        <threads-list on-thread-selected="threadSelected" on-thread-created="threadCreated"></threads-list>
       </app-drawer>
 
       <app-header-layout>
@@ -36,7 +36,7 @@
             <div main-title>Foro</div>
           </app-toolbar>
         </app-header>
-        <thread-room></thread-room>
+        <thread-room active-thread="[[activeThreadId]]" new-thread="[[newThreadObject]]"></thread-room>
       </app-header-layout>
     </app-drawer-layout>
   </template>
@@ -48,7 +48,28 @@
         static get is() { return 'foro-app'; }
         static get properties() {
           return {
+            activeThreadId: {
+              type: Number,
+              value: 0,
+            },
+            newThreadObject: {
+              type: Object,
+              value: {
+                title: 'Tema nuevo',
+                comments: []
+              }
+            }
           };
+        }
+
+        // Event Listeners to set properties
+        threadSelected(event) {
+          this.activeThreadId =  event.detail.threadId;
+        }
+        threadCreated(event) {
+          this.set('newThreadObject.title', event.detail.title);
+          this.set('newThreadObject.comments', event.detail.comments);
+          this.activeThreadId =  event.detail.thread;
         }
       }
       customElements.define(ForoApp.is, ForoApp);

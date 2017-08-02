@@ -24,15 +24,18 @@
         margin: 0 20px;
       }
     </style>
-
-    <h1>Bienvenido a Polymer México</h1>
-    <template is="dom-repeat" items="[[comments]]" as="comment">
-      <paper-card>
-        <p>[[comment.comment]]</p>
-      </paper-card>
+    <template is="dom-repeat" items="[[threads]]" as="thread">
+      <template is="dom-if" if="[[_isEqualTo(activeThread, index)]]">
+        <h1>[[thread.title]]</h1>
+        <template is="dom-repeat" items="[[thread.comments]]" as="comment">
+          <paper-card>
+            <p>[[comment]]</p>
+          </paper-card>
+        </template>
+        <paper-input id="thread-[[activeThread]]" label="Escribe tu comentrio"></paper-input>
+        <paper-button raised on-tap="newComment">Comentar</paper-button>
+      </template>
     </template>
-    <paper-input id="comment" label="Escribe tu comentrio"></paper-input>
-    <paper-button raised on-tap="newComment">Comentar</paper-button>
   </template>
   <script>
     (function threadRoom(customElements) {
@@ -44,33 +47,59 @@
         }
         static get properties() {
           return {
-            comments: {
+            newThread: {
+              type: Object,
+              value: {
+                title: 'Tema nuevo',
+                comments: []
+              }
+            },
+            activeThread: {
+              type: Number,
+              value: 0,
+            },
+            threads: {
               type: Array,
               value: [
-                {comment:"Aquí podrás encontrar la respuesta a tus dudas."},
-                {comment:"Animate a preguntar lo que quieras."},
-              ],
-            },
-            // TODO ¿Double dom-for to plaint this arrays? 
-            // threads: {
-            //   type: Array,
-            //   value: [
-            //     {
-            //       title: 'Bienvenido a Polymer México',
-            //       comments: ['Aquí podrás encontrar la respuesta a tus dudas.', 'Animate a preguntar lo que quieras.']
-            //     },{
-            //       title: 'Hablemos de Polymer 2.0',
-            //       comments: ['Polymer 2.0 ya está aquí con muchas cosas nuevas!']
-            //     }
-            //   ]
-            // }
+                {
+                  title: 'Bienvenido a Polymer México',
+                  comments: ['Aquí podrás encontrar la respuesta a tus dudas.', 'Animate a preguntar lo que quieras.']
+                },{
+                  title: 'Hablemos de Polymer 2.0',
+                  comments: ['Polymer 2.0 ya está aquí con muchas cosas nuevas!']
+                }
+              ]
+            }
           };
         }
-        newComment() {
-          let inputComment = this.shadowRoot.querySelector('#comment');
-          let commentsLength = this.comments.length + 1;
-          this.push('comments', {comment: inputComment.value});
-          inputComment.value = "";
+
+        // Hack in Validation
+        // The Observer catch the first set of values and make an un-wanted initial push
+        // Observer for new Thread
+        static get observers() {
+          return [
+              '_newThread(newThread.title)'
+          ]
+        }
+        _newThread(newTitle) {
+          if (newTitle == 'Tema nuevo') {
+          } else {
+            this.push('threads', {title: this.newThread.title, comments: this.newThread.comments});
+          }
+        }
+
+        // Compares the active thread with dom-for index to show active question
+        _isEqualTo(active, index) {
+          return active == index
+        }
+
+        //TODO Can´t reach the comments property of threads to push the new comment
+        newComment(event) {
+          let inputComment = this.shadowRoot.querySelector('#thread-' + this.activeThread);
+          // this.push('threads', inputComment.value);
+          console.log('new comment:', inputComment.value)
+          console.log(this.threads[this.activeThread].comments)
+          // inputComment.value = "";
         }
       }
       customElements.define(ThreadRoom.is, ThreadRoom);

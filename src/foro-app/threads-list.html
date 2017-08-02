@@ -37,7 +37,7 @@
     </template>
 
     <template is="dom-repeat" items="[[list]]" as="list">
-      <paper-card heading="[[list.title]]">
+      <paper-card thread="[[index]]" heading="[[list.title]]" on-click="_threadClick">
         <paper-ripple></paper-ripple>
       </paper-card>
     </template>
@@ -63,19 +63,41 @@
             threadCreator: {
               type: Boolean,
               value: false,
-            }
+            },
           };
         }
 
+        // Activate dom-if to show new thread input
         threadMaker() {
           this.set('threadCreator', true);
         }
 
+        // New thread push and dispatch custom event
         newThread() {
           let inputTitle = this.shadowRoot.querySelector('#title');
-          let listLength = this.list.length + 1;
+          let listLength = this.list.length;
           this.push('list', {title: inputTitle.value, thread: listLength});
+          this.dispatchEvent(new CustomEvent('thread-created', {
+            bubbles: true,
+            composed: true,
+            detail: {
+              title: inputTitle.value,
+              comments: [],
+              thread: listLength
+            }
+          }))
           inputTitle.value = "";
+        }
+
+        // Custom event to select question
+        _threadClick(event) {
+          this.dispatchEvent(new CustomEvent('thread-selected', {
+            bubbles: true,
+            composed: true,
+            detail: {
+              threadId: event.target.thread,
+            }
+          }));
         }
       }
 
