@@ -75,6 +75,7 @@
 
         // Hack in Validation
         // The Observer catch the first set of values and make an un-wanted initial push
+        // TODO We can set a flag to only catch the second change
         // Observer for new Thread
         static get observers() {
           return [
@@ -83,6 +84,7 @@
         }
         _newThread(newTitle) {
           if (newTitle == 'Tema nuevo') {
+            return;
           } else {
             this.push('threads', {title: this.newThread.title, comments: this.newThread.comments});
           }
@@ -93,7 +95,7 @@
           return active == index
         }
 
-        //TODO Can´t reach the comments property of threads to push the new comment
+        // Path is concatenated with activeThread to make a dinamic path tu push comment
         newComment(event) {
           let inputComment = this.shadowRoot.querySelector('#thread-' + this.activeThread);
           this.push('threads.' + this.activeThread + '.comments', inputComment.value);

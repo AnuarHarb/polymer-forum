@@ -67,8 +67,11 @@
           this.activeThreadId =  event.detail.threadId;
         }
         threadCreated(event) {
-          this.set('newThreadObject.title', event.detail.title);
-          this.set('newThreadObject.comments', event.detail.comments);
+          // This set two or moe properties at once to avoid layout trashing
+          this.setProperties({
+            'newThreadObject.title': event.detail.title,
+            'newThreadObject.comments': event.detail.comments
+          });
           this.activeThreadId =  event.detail.thread;
         }
       }
